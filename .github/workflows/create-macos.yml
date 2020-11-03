@@ -1,0 +1,36 @@
+name: create-macos
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        build_type: [Debug, Release]
+        cppstd: [None, 17]
+        linkage: [Shared, Static]
+        platform: [x86_64]
+        include:
+          - linkage: Shared
+            shared: "True"
+          - linkage: Static
+            shared: "False"
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ">= 3.5"
+      - run: python -m pip install --upgrade pip conan gitpython
+        shell: bash
+      - run: |
+          cd conan
+          conan create -o cppcommon:shared=${{ matrix.shared }} -s build_type=${{ matrix.build_type }} -s arch=${{ matrix.platform }} -s compiler.cppstd=${{ matrix.cppstd }} . cppcommon/1.0.0.0@ --build=missing
+        shell: bash
+        env:
+          CONAN_REQUEST_TIMEOUT: 120
