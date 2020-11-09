@@ -1,14 +1,12 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index dcd57785b..3cd4ba3c2 100644
+index dcd57785b..73424da9c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -21,10 +21,10 @@ endif()
- set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+@@ -22,9 +22,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
  
  # Compiler features
--include(SetCompilerFeatures)
+ include(SetCompilerFeatures)
 -include(SetCompilerWarnings)
-+# include(SetCompilerFeatures)
 +# include(SetCompilerWarnings)
  include(SetPlatformFeatures)
 -include(SystemInformation)
@@ -57,19 +55,18 @@ index dcd57785b..3cd4ba3c2 100644
  include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/plugins")
  
  # Library
-@@ -68,8 +68,9 @@ file(GLOB_RECURSE LIB_INLINE_FILES "include/*.inl")
+@@ -68,8 +68,8 @@ file(GLOB_RECURSE LIB_INLINE_FILES "include/*.inl")
  file(GLOB_RECURSE LIB_SOURCE_FILES "source/*.cpp")
  add_library(cppcommon ${LIB_HEADER_FILES} ${LIB_INLINE_FILES} ${LIB_SOURCE_FILES})
  set_target_properties(cppcommon PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}" FOLDER "libraries")
 -target_include_directories(cppcommon PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" PUBLIC ${vld})
 -target_link_libraries(cppcommon ${LINKLIBS} fmt)
 +target_include_directories(cppcommon PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-+target_compile_features(cppcommon PUBLIC cxx_std_17)
 +target_link_libraries(cppcommon PUBLIC ${LINKLIBS} CONAN_PKG::fmt)
  list(APPEND INSTALL_TARGETS cppcommon)
  list(APPEND LINKLIBS cppcommon)
  
-@@ -91,7 +92,7 @@ if(NOT CPPCOMMON_MODULE)
+@@ -91,7 +91,7 @@ if(NOT CPPCOMMON_MODULE)
      list(APPEND INSTALL_TARGETS_PDB ${PLUGIN_TARGET})
    endforeach()
  
@@ -78,7 +75,7 @@ index dcd57785b..3cd4ba3c2 100644
    file(GLOB EXAMPLE_HEADER_FILES "examples/*.h")
    file(GLOB EXAMPLE_INLINE_FILES "examples/*.inl")
    file(GLOB EXAMPLE_SOURCE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/examples" "examples/*.cpp")
-@@ -105,8 +106,8 @@ if(NOT CPPCOMMON_MODULE)
+@@ -105,8 +105,8 @@ if(NOT CPPCOMMON_MODULE)
      list(APPEND INSTALL_TARGETS ${EXAMPLE_TARGET})
      list(APPEND INSTALL_TARGETS_PDB ${EXAMPLE_TARGET})
    endforeach()
@@ -89,7 +86,7 @@ index dcd57785b..3cd4ba3c2 100644
    file(GLOB BENCHMARK_HEADER_FILES "performance/*.h")
    file(GLOB BENCHMARK_INLINE_FILES "performance/*.inl")
    file(GLOB BENCHMARK_SOURCE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/performance" "performance/*.cpp")
-@@ -120,8 +121,8 @@ if(NOT CPPCOMMON_MODULE)
+@@ -120,8 +120,8 @@ if(NOT CPPCOMMON_MODULE)
      list(APPEND INSTALL_TARGETS ${BENCHMARK_TARGET})
      list(APPEND INSTALL_TARGETS_PDB ${BENCHMARK_TARGET})
    endforeach()
@@ -100,7 +97,7 @@ index dcd57785b..3cd4ba3c2 100644
    file(GLOB TESTS_HEADER_FILES "tests/*.h")
    file(GLOB TESTS_INLINE_FILES "tests/*.inl")
    file(GLOB TESTS_SOURCE_FILES "tests/*.cpp")
-@@ -129,22 +130,22 @@ if(NOT CPPCOMMON_MODULE)
+@@ -129,22 +129,22 @@ if(NOT CPPCOMMON_MODULE)
    add_dependencies(cppcommon-tests ${PLUGINS})
    set_target_properties(cppcommon-tests PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}" FOLDER "tests")
    target_include_directories(cppcommon-tests PRIVATE ${Catch2})

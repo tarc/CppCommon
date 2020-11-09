@@ -1,0 +1,14 @@
+diff --git a/cmake/SetCompilerFeatures.cmake b/cmake/SetCompilerFeatures.cmake
+new file mode 100644
+index 000000000..8a6900a2b
+--- /dev/null
++++ b/cmake/SetCompilerFeatures.cmake
+@@ -0,0 +1,8 @@
++# Compiler features
++
++# Choose C++ standard
++set(CMAKE_CXX_STANDARD 17)
++
++if(CYGWIN OR MINGW)
++    add_definitions(-Wa,-mbig-obj)
++endif()
